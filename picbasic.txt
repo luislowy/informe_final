@@ -1,0 +1,95 @@
+DEFINE osc 4  //// para definir el oscilador "XT_osc= para oscde 4mhz;;; hs_osc=para 20Mhz"
+
+
+
+DEFINE osc 20
+
+//se pueden poner en binario(TRISA=%000000) hexadecimal($00) y decimal(TRISA=0)
+
+TRISA=%000000 ///son salidas
+TRISB=%00000000 ///son salidas
+TRISC=%00000000 ///son salidas
+TRISD=%00000000 ///son salidas
+TRISE=%000 ///son salidas
+
+
+ADCON1=7 ///PARA PUERTOS DIGITALES SON 7
+
+//// en que estado inician los puertos
+PORTA=0
+PORTB=0
+PORTC=0
+PORTD=0
+PORTE=0
+
+
+
+INICIO:
+/////////////////////////////**********************//////////////////////
+/// UNA FORMA PARA CAMBIAR DE ESTADO LOS PUERTOS DIGITALES
+
+PORTA=%000001
+PAUSE 300
+PORTA=%000000
+PAUSE 300
+
+/// SEGUNDA FORMA PARA CAMBIAR DE ESTADO LOS PUERTOS DIGITALES
+
+PORTB.0=1
+PAUSE 300
+PORTB.0=0
+PAUSE 300
+
+/// TERCERA FORMA PARA CAMBIAR DE ESTADO LOS PUERTOS DIGITALES
+
+HIGH PORTC.0
+PAUSE 300
+LOW PORTC.0
+PAUSE 300
+/////////////////////////////**********************//////////////////////
+
+/// CONDICIONES 
+
+IF PORTB.0==1 THEN 
+	PORTB.0=1
+ENDIF
+PORTB.0=0
+
+/// REDUCIOENDO CUANDO EL IF ES CORTO
+IF PORTB.0==1 THEN PORTB.0=1
+
+PORTB.0=0
+/////////////////////////////**********************//////////////////////
+
+//// ALIAS O SIMBOLOS
+
+SYMBOL LED=PORB.0
+SYMBOL BOTON=PORTA.0
+
+/////////////////////////////**********************//////////////////////
+
+
+/// ENCENDER LED CON BOTON Y ANTIREBOTE
+
+contador var byte
+contador=0
+
+inicio:
+    if PORTD.0==1 then goto contar 
+    
+    if contador==1 then 
+        high PORTB.0   
+    else 
+        low PORTB.0
+        contador=0
+     endif        
+goto inicio
+
+contar:
+    if PORTD.0==1 then goto contar
+    pause 2
+    contador=contador +1
+   
+goto inicio
+/////////////////////////////**********************//////////////////////
+GOTO INICIO
